@@ -1,11 +1,27 @@
 const http = require("http");
-const express = require('express');
-const app = express();
+var qrcode = require('qrcode-terminal');
+const { Client } = require('whatsapp-web.js');
+const client = new Client();
+const personNumber = 12428025623;
+const msg = "Happy birthday!";
 
-app.get('/', (req, res) => {
-    
+
+
+
+client.on('qr', (qr) => {
+    console.log('QR RECEIVED', qrcode.generate(qr, { small: true }));
 });
 
-const PORT = process.env.PORT || 3000 ;
+client.initialize();
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+client.on('ready', () => {
+    console.log('Client is ready!');
+    let chatId = personNumber + "@c.us";
+    client.sendMessage(chatId, msg)
+    .then(response => {
+        if (response.id.fromMe) 
+        {
+            console.log("Your message was sent");
+        }
+    })
+});
